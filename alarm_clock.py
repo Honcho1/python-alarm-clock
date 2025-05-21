@@ -1,7 +1,6 @@
 """
 Advanced Alarm Clock Program
 A comprehensive alarm clock with customizable tones and snooze functionality.
-
 """
 
 import time
@@ -16,14 +15,14 @@ try:
     from playsound import playsound
     AUDIO_AVAILABLE = True
 except ImportError:
-    print("Warning: playsound library not found. Audio playback will be disabled.")
+    print("Warning: playsound library not found. Audio playback will be simulated.")
     AUDIO_AVAILABLE = False
     def playsound(sound_file):
-        print(f"♪ Playing alarm sound: {sound_file}")
+        print(f"♪ Playing alarm sound: {sound_file} ♪")
 
 class AlarmClock:
     """Main alarm clock class with full functionality."""
-
+    
     def __init__(self):
         """Initialize the alarm clock with default settings."""
         self.alarms: List[Dict] = []
@@ -31,28 +30,28 @@ class AlarmClock:
         self.snooze_duration = 5  # Default snooze duration in minutes
         self.default_tones = {
             "1": "beep.wav",
-            "2": "bell.wav",
+            "2": "bell.wav", 
             "3": "chime.wav",
-            "4": "buzzer.wav",
+            "4": "buzzer.wav"
         }
         self.running = True
-
+        
         # Create default tone files if they don't exist
         self._create_default_tones()
-
+    
     def _create_default_tones(self):
         """Create placeholder sound files for demonstration purposes."""
         tone_folder = "alarm_tones"
         if not os.path.exists(tone_folder):
             os.makedirs(tone_folder)
-
+        
         # Create simple text files as placeholders for actual audio files
-        for tone in self.default_tones.values():
+        for tone_file in self.default_tones.values():
             tone_path = os.path.join(tone_folder, tone_file)
             if not os.path.exists(tone_path):
                 with open(tone_path, 'w') as f:
                     f.write(f"Placeholder for {tone_file}")
-
+    
     def validate_time_format(self, time_str: str) -> bool:
         """
         Validate time input in HH:MM format (24-hour clock).
@@ -72,20 +71,20 @@ class AlarmClock:
             return 0 <= hours <= 23 and 0 <= minutes <= 59
         except (ValueError, IndexError):
             return False
-        
+    
     def set_alarm(self) -> None:
         """Set a new alarm with user input."""
         print("\n" + "="*50)
         print("           SET NEW ALARM")
         print("="*50)
-
+        
         # Get alarm time
         while True:
             alarm_time = input("Enter alarm time (HH:MM in 24-hour format): ").strip()
             if self.validate_time_format(alarm_time):
                 break
             print("❌ Invalid time format. Please use HH:MM (e.g., 14:30)")
-
+        
         # Get alarm tone
         tone_choice = self.select_alarm_tone()
         
@@ -96,8 +95,8 @@ class AlarmClock:
         label = input("Enter alarm label (optional): ").strip()
         if not label:
             label = f"Alarm at {alarm_time}"
-
-         # Create alarm dictionary
+        
+        # Create alarm dictionary
         alarm = {
             'time': alarm_time,
             'tone': tone_choice,
@@ -114,7 +113,7 @@ class AlarmClock:
         print(f"   Tone: {tone_choice}")
         print(f"   Snooze: {snooze_duration} minutes")
         print(f"   Label: {label}")
-
+    
     def select_alarm_tone(self) -> str:
         """
         Allow user to select an alarm tone.
@@ -128,7 +127,7 @@ class AlarmClock:
         print("3. Chime")
         print("4. Buzzer")
         print("5. Upload Custom Tone")
-
+        
         while True:
             choice = input("Enter your choice (1-5): ").strip()
             
@@ -139,7 +138,7 @@ class AlarmClock:
                 return self.upload_custom_tone()
             else:
                 print("❌ Invalid choice. Please select 1-5.")
-
+    
     def upload_custom_tone(self) -> str:
         """
         Allow user to specify a custom alarm tone.
@@ -147,7 +146,6 @@ class AlarmClock:
         Returns:
             str: Path to custom tone file
         """
-
         while True:
             file_path = input("Enter path to custom audio file (.wav, .mp3): ").strip()
             
@@ -165,7 +163,7 @@ class AlarmClock:
                 use_default = input("Use default tone instead? (y/n): ").lower()
                 if use_default == 'y':
                     return os.path.join("alarm_tones", self.default_tones['1'])
-
+    
     def select_snooze_duration(self) -> int:
         """
         Allow user to select snooze duration.
@@ -178,7 +176,7 @@ class AlarmClock:
         print("2. 10 minutes")
         print("3. 15 minutes")
         print("4. Custom duration")
-
+        
         while True:
             choice = input("Enter your choice (1-4): ").strip()
             
@@ -200,7 +198,7 @@ class AlarmClock:
                         print("❌ Please enter a valid number.")
             else:
                 print("❌ Invalid choice. Please select 1-4.")
-
+    
     def view_alarms(self) -> None:
         """Display all set alarms."""
         print("\n" + "="*50)
@@ -220,7 +218,7 @@ class AlarmClock:
             print(f"   Tone: {os.path.basename(alarm['tone'])}")
             print(f"   Snooze: {alarm['snooze_duration']} minutes")
             print("-" * 40)
-
+    
     def manage_alarms(self) -> None:
         """Manage existing alarms (enable/disable/delete)."""
         if not self.alarms:
@@ -244,7 +242,7 @@ class AlarmClock:
             return
         else:
             print("❌ Invalid choice.")
-
+    
     def toggle_alarm(self) -> None:
         """Enable or disable an alarm."""
         try:
@@ -257,7 +255,7 @@ class AlarmClock:
                 print("❌ Invalid alarm number.")
         except ValueError:
             print("❌ Please enter a valid number.")
-
+    
     def delete_alarm(self) -> None:
         """Delete an alarm."""
         try:
@@ -269,7 +267,7 @@ class AlarmClock:
                 print("❌ Invalid alarm number.")
         except ValueError:
             print("❌ Please enter a valid number.")
-
+    
     def play_alarm(self, alarm: Dict) -> None:
         """
         Play the alarm sound.
@@ -293,7 +291,7 @@ class AlarmClock:
             print(f"❌ Error playing alarm sound: {e}")
             # Fallback to text-based alarm
             print("🔔 ALARM! ALARM! ALARM! 🔔")
-
+    
     def handle_alarm_response(self, alarm: Dict) -> None:
         """
         Handle user response to alarm (dismiss or snooze).
@@ -328,7 +326,7 @@ class AlarmClock:
                 print("\n✅ Alarm dismissed via keyboard interrupt.")
                 self.active_alarm = None
                 break
-
+    
     def snooze_alarm(self, alarm: Dict) -> None:
         """
         Snooze the alarm for the specified duration.
@@ -357,7 +355,7 @@ class AlarmClock:
         
         # Start monitoring for the snoozed alarm
         threading.Thread(target=self.monitor_snooze_alarm, args=(snooze_alarm,), daemon=True).start()
-
+    
     def monitor_snooze_alarm(self, alarm: Dict) -> None:
         """
         Monitor a snoozed alarm until it's time to ring again.
@@ -378,13 +376,13 @@ class AlarmClock:
                 break
                 
             time.sleep(30)  # Check every 30 seconds
-
+    
     def start_monitoring(self) -> None:
         """Start monitoring all alarms in a separate thread."""
         monitor_thread = threading.Thread(target=self.alarm_monitor, daemon=True)
         monitor_thread.start()
         print("✅ Alarm monitoring started.")
-
+    
     def alarm_monitor(self) -> None:
         """Monitor all alarms for activation."""
         while self.running:
@@ -404,7 +402,7 @@ class AlarmClock:
                     self.handle_alarm_response(alarm)
             
             time.sleep(30)  # Check every 30 seconds
-
+    
     def show_help(self) -> None:
         """Display help information."""
         help_text = """
@@ -445,7 +443,7 @@ class AlarmClock:
         ===============================================
         """
         print(help_text)
-
+    
     def display_menu(self) -> None:
         """Display the main menu."""
         print("\n" + "="*50)
@@ -465,7 +463,7 @@ class AlarmClock:
         # Show active alarms count
         active_count = sum(1 for alarm in self.alarms if alarm['enabled'])
         print(f"Active Alarms: {active_count}")
-
+    
     def run(self) -> None:
         """Main program loop."""
         print("🔔 Welcome to Advanced Alarm Clock!")
@@ -517,4 +515,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
